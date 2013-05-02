@@ -1,174 +1,174 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>DataTables example</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>DataTables example</title>
 
-	<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
+<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables_themeroller.css">
 
-	<script type="text/javascript" language="javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-	<script type="text/javascript" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" charset="utf-8">
+<script type="text/javascript" language="javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" language="javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf-8">
 
-	$(document).ready(function() {		
+$(document).ready(function() {		
 
-		//Custom properties
-		custom = {
-			serverside :"",
-			datatablePresentation : ""
-		}
+	//Custom properties
+	custom = {
+		serverside :"",
+		datatablePresentation : ""
+	}
 
-		custom.serverside = 
-		{
-			paginated:function (tableId)
-			  {
-				return{
-					"bSort": true,
-					"aaSorting": [], //disable initial sort
-					"bInfo": true,
-					"bJQueryUI": true,
-					"bRetrieve": true,
-					"bStateSave": true,
-					"bScrollCollapse": true,
-					"bPaginate": true,
-					"bLengthChange": true,
-					"bFilter": true,
-					"sDom": '<"H"lfr<"#custom">>t<"F"ip> ',
-					"aLengthMenu" :[200, 150, 100, 50],
-					"bAutoWidth": true,
-					"sPaginationType": "full_numbers",
-					"bProcessing": true,
-					"bServerSide": true,
-					"sAjaxSource": "",
-					"fnServerData": serverData(),
-					/*
-					*  highlight the selected row
-					*/
-					"fnDrawCallback":function()
-									{
-										$("#"+tableId+" tr").click(function() {
-											if ( $(this).hasClass('row_selected') ) {
-												$(this).removeClass('row_selected');
-											}
-											else {
-												$('tr.row_selected').removeClass('row_selected');
-												$(this).addClass('row_selected');
-											}
-										} );								
-									},
-					"aoColumnDefs": custom.datatablePresentation[tableId]				
-				}
-			}
-		};
-
-		/*
-		*  We can customly map the content of the result json with the columns	
-		*/
-
-		custom.datatablePresentation = 
-		{
-			"clientstable":	[{
-					"mDataProp": "officeId",
-					"aTargets":  [0]
-					},
+	custom.serverside = 
+	{
+		paginated:function (tableId)
+		  {
+			return{
+				"bSort": true,
+				"aaSorting": [], //disable initial sort
+				"bInfo": true,
+				"bJQueryUI": true,
+				"bRetrieve": true,
+				"bStateSave": true,
+				"bScrollCollapse": true,
+				"bPaginate": true,
+				"bLengthChange": true,
+				"bFilter": true,
+				"sDom": '<"H"lfr<"#custom">>t<"F"ip> ',
+				"aLengthMenu" :[200, 150, 100, 50],
+				"bAutoWidth": true,
+				"sPaginationType": "full_numbers",
+				"bProcessing": true,
+				"bServerSide": true,
+				"sAjaxSource": "",
+				"fnServerData": serverData(),
+				/*
+				*  highlight the selected row
+				*/
+				"fnDrawCallback":function()
 					{
-						"mDataProp": "accountNo",
-						"aTargets": [1],
-						/*
-						* We have the flexibility to change the cell content
-						*/
-						"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
-						{
-							$(nTd).html('<a id="navigateToClient'+oData.id+'" href="#" onclick="showILClient('+oData.id+');">'+sData+'</a>');
+					$("#"+tableId+" tr").click(function() {
+						if ( $(this).hasClass('row_selected') ) {
+							$(this).removeClass('row_selected');
 						}
-						},
-					{
-						"mDataProp": "displayName",
-						"aTargets": [2]
+						else {
+							$('tr.row_selected').removeClass('row_selected');
+							$(this).addClass('row_selected');
+						}
+					} );								
 					},
-					{
-						"mDataProp": "id",
-						"aTargets": [3],
-						"bVisible":false 
-					}]							
-		};
-
-		$.urlConstructor = function(sSource,oSettings){
-			return "request url"; 
-		}
-
-		$.prepareDataToSend = function(aoData){			
-			var jsonData = {
-					offset:aoData[3].value,
-					limit:aoData[4].value,
-			};
-			return jsonData;
-		}
-
-		var serverData = function()
-		{
-			return function (sSource, aoData, fnCallback, oSettings) {
-				oSettings.jqXHR = $.ajax({ 
-					url : $.urlConstructor(sSource,oSettings),
-					type : "GET", //POST, GET, PUT or DELETE 
-					contentType : "application/json; charset=utf-8", 
-					dataType : 'json', 
-					data : $.prepareDataToSend(aoData), 
-					cache : false, 
-					beforeSend : function(xhr) { 
-						//Do something before sending the ajax request	
-					}, 
-					success : function (json) {
-						var data = {
-							iTotalDisplayRecords : json.totalFilteredRecords,
-							aaData:json.pageItems
-						};				                         
-						fnCallback(data);
-					}
-				}); 
+				"aoColumnDefs": custom.datatablePresentation[tableId]				
 			}
 		}
-			
-		/*
-		*  Customizing the search; 	
-		*/
-		var initTableConf = function (tableId,oTable)
-		{
-			//Unbind search functoin on keypress
-			$("#"+tableId+"_filter input").unbind();
-			//Bind search function on enter key
-			$("#"+tableId+"_filter input").bind('keyup', function(e) {
-		   			if(e.keyCode == 13) {
-		    			oTable.fnFilter(this.value);   
-					}
-				}); 
-		}
+	};
 
-		//Initializing datatables
-		var oTable = $("#example").dataTable(custom.serverside.paginated("example"));
-		initTableConf("example",oTable);
-	} );
+	/*
+	*  We can customly map the content of the result json with the columns	
+	*/
+
+	custom.datatablePresentation = 
+	{
+		"clientstable":	[{
+				"mDataProp": "officeId",
+				"aTargets":  [0]
+				},
+				{
+					"mDataProp": "accountNo",
+					"aTargets": [1],
+					/*
+					* We have the flexibility to change the cell content
+					*/
+					"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+					{
+						$(nTd).html('<a id="navigateToClient'+oData.id+'" href="#" onclick="showILClient('+oData.id+');">'+sData+'</a>');
+					}
+					},
+				{
+					"mDataProp": "displayName",
+					"aTargets": [2]
+				},
+				{
+					"mDataProp": "id",
+					"aTargets": [3],
+					"bVisible":false 
+				}]							
+	};
+
+	$.urlConstructor = function(sSource,oSettings){
+		return "request url"; 
+	}
+
+	$.prepareDataToSend = function(aoData){			
+		var jsonData = {
+				offset:aoData[3].value,
+				limit:aoData[4].value,
+		};
+		return jsonData;
+	}
+
+	var serverData = function()
+	{
+		return function (sSource, aoData, fnCallback, oSettings) {
+			oSettings.jqXHR = $.ajax({ 
+				url : $.urlConstructor(sSource,oSettings),
+				type : "GET", //POST, GET, PUT or DELETE 
+				contentType : "application/json; charset=utf-8", 
+				dataType : 'json', 
+				data : $.prepareDataToSend(aoData), 
+				cache : false, 
+				beforeSend : function(xhr) { 
+					//Do something before sending the ajax request	
+				}, 
+				success : function (json) {
+					var data = {
+						iTotalDisplayRecords : json.totalFilteredRecords,
+						aaData:json.pageItems
+					};				                         
+					fnCallback(data);
+				}
+			}); 
+		}
+	}
+		
+	/*
+	*  Customizing the search; 	
+	*/
+	var initTableConf = function (tableId,oTable)
+	{
+		//Unbind search functoin on keypress
+		$("#"+tableId+"_filter input").unbind();
+		//Bind search function on enter key
+		$("#"+tableId+"_filter input").bind('keyup', function(e) {
+	   			if(e.keyCode == 13) {
+	    			oTable.fnFilter(this.value);   
+				}
+			}); 
+	}
+
+	//Initializing datatables
+	var oTable = $("#example").dataTable(custom.serverside.paginated("example"));
+	initTableConf("example",oTable);
+} );
 </script>
 </head>
 
 <body id="dt_example">
-	<div id="container">
-		<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
-			<thead>
-				<tr>
-					<th width="20%">Office Name</th>
-					<th width="25%">Account No</th>
-					<th width="25%">Display Name</th>			
-				</tr>
-			</thead>
-			<tbody>
-	            <tr>
-	                <td colspan="5" class="dataTables_empty">Loading data from server</td>
-	            </tr>			
-			</tbody>
-		</table>
-	</div>
+<div id="container">
+	<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+		<thead>
+			<tr>
+				<th width="20%">Office Name</th>
+				<th width="25%">Account No</th>
+				<th width="25%">Display Name</th>			
+			</tr>
+		</thead>
+		<tbody>
+            <tr>
+                <td colspan="5" class="dataTables_empty">Loading data from server</td>
+            </tr>			
+		</tbody>
+	</table>
+</div>
 </body>
 </html>
