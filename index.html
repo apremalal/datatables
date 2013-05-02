@@ -70,29 +70,29 @@
 		custom.datatablePresentation = 
 		{
 			"clientstable":	[{
-								"mDataProp": "officeId",
-								"aTargets":  [0]
-								},
-								{
-									"mDataProp": "accountNo",
-									"aTargets": [1],
-									/*
-									* We have the flexibility to change the cell content
-									*/
-									"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
-									{
-										$(nTd).html('<a id="navigateToClient'+oData.id+'" href="#" onclick="showILClient('+oData.id+');">'+sData+'</a>');
-									}
-									},
-								{
-									"mDataProp": "displayName",
-									"aTargets": [2]
-								},
-								{
-									"mDataProp": "id",
-									"aTargets": [3],
-									"bVisible":false 
-								}]							
+					"mDataProp": "officeId",
+					"aTargets":  [0]
+					},
+					{
+						"mDataProp": "accountNo",
+						"aTargets": [1],
+						/*
+						* We have the flexibility to change the cell content
+						*/
+						"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+						{
+							$(nTd).html('<a id="navigateToClient'+oData.id+'" href="#" onclick="showILClient('+oData.id+');">'+sData+'</a>');
+						}
+						},
+					{
+						"mDataProp": "displayName",
+						"aTargets": [2]
+					},
+					{
+						"mDataProp": "id",
+						"aTargets": [3],
+						"bVisible":false 
+					}]							
 		};
 
 		$.urlConstructor = function(sSource,oSettings){
