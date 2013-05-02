@@ -23,44 +23,44 @@
 		custom.serverside = 
 		{
 			paginated:function (tableId)
-					  {
-						return{
-							"bSort": true,
-							"aaSorting": [], //disable initial sort
-							"bInfo": true,
-							"bJQueryUI": true,
-							"bRetrieve": true,
-							"bStateSave": true,
-							"bScrollCollapse": true,
-							"bPaginate": true,
-							"bLengthChange": true,
-							"bFilter": true,
-							"sDom": '<"H"lfr<"#custom">>t<"F"ip> ',
-							"aLengthMenu" :[200, 150, 100, 50],
-							"bAutoWidth": true,
-							"sPaginationType": "full_numbers",
-							"bProcessing": true,
-							"bServerSide": true,
-							"sAjaxSource": "",
-							"fnServerData": serverData(),
-							/*
-							*  highlight the selected row
-							*/
-							"fnDrawCallback":function()
-											{
-												$("#"+tableId+" tr").click(function() {
-													if ( $(this).hasClass('row_selected') ) {
-														$(this).removeClass('row_selected');
-													}
-													else {
-														$('tr.row_selected').removeClass('row_selected');
-														$(this).addClass('row_selected');
-													}
-												} );								
-											},
-							"aoColumnDefs": custom.datatablePresentation[tableId]				
-						}
+			  {
+				return{
+					"bSort": true,
+					"aaSorting": [], //disable initial sort
+					"bInfo": true,
+					"bJQueryUI": true,
+					"bRetrieve": true,
+					"bStateSave": true,
+					"bScrollCollapse": true,
+					"bPaginate": true,
+					"bLengthChange": true,
+					"bFilter": true,
+					"sDom": '<"H"lfr<"#custom">>t<"F"ip> ',
+					"aLengthMenu" :[200, 150, 100, 50],
+					"bAutoWidth": true,
+					"sPaginationType": "full_numbers",
+					"bProcessing": true,
+					"bServerSide": true,
+					"sAjaxSource": "",
+					"fnServerData": serverData(),
+					/*
+					*  highlight the selected row
+					*/
+					"fnDrawCallback":function()
+									{
+										$("#"+tableId+" tr").click(function() {
+											if ( $(this).hasClass('row_selected') ) {
+												$(this).removeClass('row_selected');
+											}
+											else {
+												$('tr.row_selected').removeClass('row_selected');
+												$(this).addClass('row_selected');
+											}
+										} );								
+									},
+					"aoColumnDefs": custom.datatablePresentation[tableId]				
 				}
+			}
 		};
 
 		/*
